@@ -2,7 +2,10 @@
 # (Secular Buddhist Tradition, SBTonline.org). Loaded as data, never
 # hardcoded. `body_text` is the recited liturgy; `attribution` (the
 # "– Venerable Tarpa" line) is kept separate and is NOT recited. The
-# morning/evening `set` grouping is provisional — edit freely.
+# `set` grouping is provisional — edit freely. Only the morning set is
+# populated; the evening set is empty (the Evening Affirmation isn't on
+# Ven. Tarpa's Refuge recording, which is the source of truth, so it was
+# dropped).
 affirmations:
   - id: waking
     title: Waking Affirmation
@@ -239,20 +242,13 @@ affirmations:
       6. Right effort
       7. Right mindfulness
       8. Right concentration
-      Pledge of daily practice and commitments,
+
+  - id: pledge-of-daily-practice
+    title: Pledge of Daily Practice and Commitments
+    order: 16
+    set: null
+    attribution: Venerable Tarpa
+    body_text: |
       I vow, to uphold my daily training - of affirmations, practice, and proper behavior,
       To recite my vows, precepts, and pledges daily,
       To purify my vows monthly - by honoring the day of observance.
-
-  - id: evening
-    title: Evening Affirmation
-    order: 16
-    set: evening
-    attribution: Venerable Tarpa
-    body_text: |
-      This evening, as I put my day to rest, I reflect on today’s productive actions.
-      That through my study, contemplation, and practice, I have increased my understanding.
-      That through my altruistic efforts and maturity I have contributed to my community.
-      That through my virtuous intentions and actions, I’m now one step closer to awakening.
-      For tomorrow, and every day thereafter, my goal remains clear, simply improvement,
-      To become a little wiser and a little kinder each and every day.

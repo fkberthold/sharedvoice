@@ -1,0 +1,29 @@
+# Cut points that carve Ven. Tarpa's combined Refuge.mp3 recitation into
+# per-affirmation root recordings (one per corpus id). Consumed by sv-lds.20.
+#
+# Each `start` is in SECONDS from the top of the file and includes ~0.5s of
+# air BEFORE the spoken title — the cut lands before Tarpa announces the
+# title, so the root carries "title (his solo) -> body (the hall joins)".
+# Each segment runs to the NEXT start; the last runs to end-of-file.
+#
+# The mp3 itself is NOT committed (sensitive voice) — it lives in the storage
+# layer. Only these numeric cut points are tracked here. Start times supplied
+# by Frank, 2026-07-03.
+source: Refuge.mp3
+segments:
+  - {id: waking, start: 15.0}
+  - {id: morning-community, start: 48.5}
+  - {id: my-path, start: 80.0}
+  - {id: motivational, start: 119.5}
+  - {id: five-remembrances, start: 155.0}
+  - {id: mental-discipline, start: 199.5}
+  - {id: abiding-on-the-breath, start: 255.0}
+  - {id: altruistic, start: 283.5}
+  - {id: four-gifts, start: 308.0}
+  - {id: four-steps-of-acceptance, start: 337.0}
+  - {id: appreciation, start: 405.0}
+  - {id: four-expressions-of-softness, start: 448.0}
+  - {id: shine, start: 483.0}
+  - {id: refuge-pledge, start: 539.5}
+  - {id: four-noble-truths, start: 597.0}
+  - {id: pledge-of-daily-practice, start: 663.0}
