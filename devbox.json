@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.14.2/.schema/devbox.schema.json",
+  "packages": [
+    "python@3.12",
+    "ffmpeg@latest",
+    "nodejs@22",
+    "pnpm@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "test -d .venv || python -m venv .venv",
+      ". .venv/bin/activate",
+      "pip install -q --disable-pip-version-check -r backend/requirements.txt -r requirements.txt"
+    ],
+    "scripts": {
+      "test": [". .venv/bin/activate", "pytest"],
+      "lint": [". .venv/bin/activate", "ruff check ."],
+      "docs": [". .venv/bin/activate", "mkdocs serve"]
+    }
+  }
+}

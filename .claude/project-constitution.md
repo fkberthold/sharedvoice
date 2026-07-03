@@ -11,12 +11,12 @@
 # apply — don't delete keys.
 
 shell:
-  # Target dev shell is a Nix flake (python + audio deps + ffmpeg +
-  # node/pnpm). enter stays "" until flake.nix actually lands (bead
-  # sv-lds.1); that bead flips enter -> "nix develop". Setting it before
-  # the flake exists would break workers entering a shell that isn't there.
-  enter: ""
-  run_prefix: ""
+  # devbox environment (Nix-backed): python@3.12 + audio deps + ffmpeg +
+  # node/pnpm. devbox.json landed in sv-lds.1, so enter/run_prefix are live.
+  # `devbox shell` for interactive; `devbox run -- <cmd>` for one-shot — both
+  # fire the init_hook that builds .venv + installs backend + docs requirements.
+  enter: "devbox shell"
+  run_prefix: "devbox run --"
 
 # Backend python deps. Frontend uses pnpm (node) — see prose "Tooling
 # choices". Single package_manager field tracks the primary (backend).
@@ -85,10 +85,11 @@ chant** — syllabic speech with sharp consonant transients. That makes alignmen
 cheap (plain cross-correlation, never time-warping) and makes Python the natural
 home, because the audio-science ecosystem we lean on lives there.
 
-- **Shell**: a **Nix flake** (`flake.nix`) providing a reproducible `nix develop`
-  shell with Python + the audio deps + ffmpeg + node/pnpm. Frank works in Nix on
-  Ubuntu (Helix editor — no IDE config needed). `shell.enter` is set to
-  `nix develop` once the flake lands (bead `sv-lds.1`).
+- **Shell**: a **devbox** environment (`devbox.json`, Nix-backed) providing a
+  reproducible `devbox shell` with Python + the audio deps + ffmpeg + node/pnpm.
+  Frank works in Nix/devbox on Ubuntu (Helix editor — no IDE config needed).
+  `shell.enter` is set to `devbox shell` once `devbox.json` lands (bead
+  `sv-lds.1`).
 - **Backend**: **Python + FastAPI**. Python for the audio ecosystem
   (`numpy`, `scipy.signal`, `librosa`, `soundfile`, `ffmpeg`); FastAPI for clean
   async file-upload endpoints. Package manager `pip` (no lockfile yet;
@@ -137,5 +138,5 @@ None. `bypass_patterns: []` — no escape hatches are authored yet.
   the P1 audit drawer `drawer_sharedvoice_decisions_281fc837258180ee634fcef0`
   and the P5 constitution drawer `drawer_sharedvoice_decisions_17936f90...`.
 - **Beads**: epic `sv-lds` (SharedVoice) and its Phase 0–3 children; this prose
-  authored under `sv-fa9`. The Nix flake / `shell.enter` reconciliation is
+  authored under `sv-fa9`. The devbox / `shell.enter` reconciliation is
   owned by `sv-lds.1`.

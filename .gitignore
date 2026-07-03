@@ -157,6 +157,9 @@ ENV/
 env.bak/
 venv.bak/
 
+# devbox — ignore the local nix profile dir; keep devbox.json + devbox.lock tracked
+.devbox/
+
 # Spyder project settings
 .spyderproject
 .spyproject

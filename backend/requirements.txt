@@ -1,0 +1,20 @@
+# SharedVoice backend (app) dependencies.
+# Kept separate from the root requirements.txt, which holds the MkDocs
+# docs-site toolchain. The devbox dev shell installs both into .venv.
+#
+# Unpinned for the MVP; pin once the pipeline stabilizes.
+
+# Audio-science stack — the reason this project is Python.
+numpy
+scipy
+librosa
+soundfile
+
+# Web API.
+fastapi
+uvicorn[standard]
+python-multipart
+
+# Dev / quality (canonical_commands: test=pytest, lint=ruff check .).
+pytest
+ruff
