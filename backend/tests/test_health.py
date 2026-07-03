@@ -10,8 +10,8 @@ from fastapi.testclient import TestClient
 from sharedvoice.app import create_app
 
 
-def test_health_returns_ok():
-    client = TestClient(create_app())
+def test_health_returns_ok(tmp_path):
+    client = TestClient(create_app(db_path=tmp_path / "t.db", storage_root=tmp_path / "blobs"))
     resp = client.get("/health")
     assert resp.status_code == 200
     assert resp.json() == {"status": "ok"}

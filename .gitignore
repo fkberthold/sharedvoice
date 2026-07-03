@@ -164,6 +164,9 @@ venv.bak/
 # built for the dispatch-middle split and false-positives on inline RED->GREEN.
 .claude/no-edit-after-failure-guard
 
+# runtime data (sqlite db + audio blobs) — never in git
+var/
+
 # Spyder project settings
 .spyderproject
 .spyproject
