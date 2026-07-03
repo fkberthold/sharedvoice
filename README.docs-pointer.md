@@ -1,0 +1,28 @@
+## Documentation
+
+sharedvoice's documentation lives in `docs/` and is published
+at the project's GitHub Pages site (configured in
+`.github/workflows/docs.yml`).
+
+The docs are organised in four Diataxis quadrants:
+
+- **Tutorials** — guided walkthroughs for new users.
+- **How-to guides** — task-oriented recipes for the already-competent.
+- **Reference** — the austere catalogue of surfaces, signatures, and
+  behaviours.
+- **Explanation** — the wider, reflective view of *why* the project
+  is shaped the way it is.
+
+Build locally:
+
+```bash
+pip install -r requirements.txt
+mkdocs serve
+```
+
+Before publishing, replace every `DOCS-SCAFFOLD-FIXME` sentinel left
+by the docs scaffold — `grep -r DOCS-SCAFFOLD-FIXME docs/` lists
+them, and `mkdocs build --strict` will refuse to build until every
+one is gone.
+
+Repository: https://github.com/fkberthold/sharedvoice

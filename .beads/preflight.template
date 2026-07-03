@@ -1,0 +1,11 @@
+# bd preflight template — python (sharedvoice)
+#
+# Language-matched PR-readiness checklist (loom-r6g item 13). Replaces
+# bd's hardcoded Go-shaped default. The live mechanism is loom-preflight,
+# which renders from .claude/project-constitution.md's language.runtime +
+# canonical_commands; keep those in sync with this list when P5 captures
+# the constitution.
+[ ] Tests run locally:        pytest
+[ ] Lint clean:               ruff check .
+[ ] Format clean:             ruff format --check .
+[ ] No .beads/issues.jsonl pollution: git diff --stat .beads/issues.jsonl

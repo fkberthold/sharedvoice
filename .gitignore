@@ -216,3 +216,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Loom per-session ephemera
+.claude/worktrees/
+.claude/workflow-state.json
+.claude/loom-audit-state.json
+.claude/loom-adopt-state.json
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
