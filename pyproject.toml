@@ -1,0 +1,9 @@
+# Tooling config for the SharedVoice backend.
+# The app is not pip-installed in the MVP; tests import it via pythonpath.
+
+[tool.pytest.ini_options]
+pythonpath = ["backend"]
+testpaths = ["backend/tests"]
+
+[tool.ruff]
+line-length = 100

@@ -14,6 +14,7 @@ soundfile
 fastapi
 uvicorn[standard]
 python-multipart
+httpx  # required by fastapi.testclient.TestClient
 
 # Dev / quality (canonical_commands: test=pytest, lint=ruff check .).
 pytest
