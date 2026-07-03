@@ -1,0 +1,258 @@
+# SharedVoice affirmation corpus — Ven. Tarpa's Refuge Level Daily Practice
+# (Secular Buddhist Tradition, SBTonline.org). Loaded as data, never
+# hardcoded. `body_text` is the recited liturgy; `attribution` (the
+# "– Venerable Tarpa" line) is kept separate and is NOT recited. The
+# morning/evening `set` grouping is provisional — edit freely.
+affirmations:
+  - id: waking
+    title: Waking Affirmation
+    order: 1
+    set: morning
+    attribution: His Holiness the 14th Dalai Lama
+    body_text: |
+      Today I am fortunate to be alive,
+      To have a precious human life,
+      I will not waste it,
+      I will use all my energies to develop myself,
+      To expand my heart out to others,
+      To achieve awakening for the benefit of all beings,
+      Today I am going to have kind thoughts towards others,
+      I am not going to get angry or think badly about others,
+      Today I’m going to benefit others as much as I can.
+
+  - id: morning-community
+    title: Morning Community Affirmation
+    order: 2
+    set: morning
+    attribution: Venerable Tarpa
+    body_text: |
+      Today, as I awake, I know I am not alone,
+      I know that I am a member of a kind community,
+      A community of like-minded practitioners dedicated to goodness and improvement,
+      A community that respects, supports, and cares for me,
+      A community of equals bound together through friendship and shared path,
+      A community that is a family, a home, and a refuge from the storm.
+
+  - id: my-path
+    title: Affirmation of My Path
+    order: 3
+    set: morning
+    attribution: Venerable Tarpa
+    body_text: |
+      Today as I awake, I reflect on and appreciate my path,
+      A middle way path of moderation and balance, of reason and virtue,
+      A path aimed at attaining clarity, objectivity, and right perspective.
+      Today I will engage wholeheartedly with my path,
+      Accepting and embracing reality, while working to reduce my reactivity.
+      Today I work to transcend my limitations through training my mind,
+      With the aim of gaining the contentment and mental freedom that is awakening.
+
+  - id: motivational
+    title: Motivational Affirmation
+    order: 4
+    set: null
+    attribution: Venerable Tarpa
+    body_text: |
+      Just as the Buddha clarified that self-punishment was not an aspect of his teachings,
+      Asserting that the comfort of his middle way to be the best foundation for practice,
+      I too cultivate and embody joy, contentment, and comfort within my path.
+      Today I embrace the beauty, delight, and wonder of my experiences.
+      I will enjoy my life, making time for fun and laughter,
+      While deeply appreciating the miracle of my existence.
+
+  - id: five-remembrances
+    title: The Five Remembrances
+    order: 5
+    set: null
+    attribution: The Buddha
+    body_text: |
+      I am of the nature to grow old; I cannot avoid aging.
+      I am of the nature to become ill or injured; I cannot avoid illness or injury.
+      I am of the nature to die; I cannot avoid death.
+      All that is dear to me and everyone I love are of the nature to change;
+      There is no way to escape being separated from them.
+      My actions are my only true belongings; I cannot escape the consequences of my actions;
+      My actions are the ground upon which I stand.
+
+  - id: mental-discipline
+    title: Mental Discipline Affirmation
+    order: 6
+    set: null
+    attribution: Venerable Tarpa
+    body_text: |
+      I will no longer allow my emotions to dictate my state of mind.
+      I will no longer allow my desires and impulses to covertly shape my life.
+      I will no longer allow my habits to blindly direct my life's course.
+      I will no longer allow my fears to rob me of opportunity and happiness.
+      I will no longer allow others to manipulate my emotions and self-worth.
+      I will be strong, energetic, and confident.
+      I will cultivate clarity and remain truthful with myself.
+      I will develop diligence and an unwavering resolve for improvement.
+      I will make conscious mature choices; and hold myself to those choices.
+      I will become wholly responsible and in full control of my life from this day forward.
+
+  - id: abiding-on-the-breath
+    title: Abiding on the Breath Affirmation
+    order: 7
+    set: null
+    attribution: Venerable Tarpa
+    body_text: |
+      Today, I commit myself to awakening by practicing Abiding on the Breath.
+      To focus and anchor my awareness on the inflow and outflow of my breathing.
+      I do this to train myself in harnessing the full power of my mindfulness,
+      Allowing me to be fully present, within the present moment.
+
+  - id: altruistic
+    title: Altruistic Affirmation
+    order: 8
+    set: null
+    attribution: Venerable Tarpa
+    body_text: |
+      May all be healthy, may all be prosperous, may all be well.
+      May all be present, free of past regret and future worry.
+      May all abide in constant appreciation, which is the source of great joy and contentment.
+      May all realize their true nature and the true nature of reality, which is awakening.
+
+  - id: four-gifts
+    title: Four Gifts Affirmation
+    order: 9
+    set: null
+    attribution: Venerable Tarpa
+    body_text: |
+      May my stability, nurture maturity, wisdom, and self-control in others.
+      May my calmness, soothe the wounds of those waged in life's daily battles.
+      May my care, bring hope and inclusion to those feeling vulnerable or marginalized.
+      May my happiness, inspire others to seek out their highest potential and greatest good.
+
+  - id: four-steps-of-acceptance
+    title: The Four Steps of Acceptance Affirmation
+    order: 10
+    set: null
+    attribution: Venerable Tarpa
+    body_text: |
+      The Four Steps of Acceptance is a method for dealing with life’s adversities.
+      A practice aimed at accepting reality without embellishment or rejection.
+      To fully embrace life, in both its joys and sufferings.
+      To transcend our endless resistance and struggle against reality,
+      And our compulsion to control our experiences and the outcome of events.
+      The Four Steps of Acceptance
+      1. Presence – being present, objective, patient, and nonreactive
+      2. Acceptance – acknowledging and embracing the reality of the situation
+      3. Assessment – applying reason to gain perspective and understanding
+      4. Action – if moved, act to improve the situation
+
+  - id: appreciation
+    title: Appreciation Affirmation
+    order: 11
+    set: null
+    attribution: Venerable Tarpa
+    body_text: |
+      Today I abide as the observing witness to the present moment.
+      I appreciate myself, my vast potential, and the good fortune I have known,
+      I appreciate the beauty and love that are always available to me,
+      I appreciate the wonders of human ingenuity, skill, efficiency, and technology,
+      I appreciate the miracle of biological evolution that I am,
+      I appreciate the precious, uncertain, and mysterious nature of my existence,
+      Today, I fully appreciate my life, in each and every moment.
+
+  - id: four-expressions-of-softness
+    title: The Four Expressions of Softness Affirmation
+    order: 12
+    set: null
+    attribution: Venerable Tarpa
+    body_text: |
+      Today, I will be mindful of the style in which I live my life.
+      Embodying goodness, beauty, and joy throughout my day.
+      Through the cultivation of:
+      A soft and beautiful mind,
+      Soft and beautiful speech,
+      Soft and beautiful behavior,
+      And soft and beautiful actions,
+      I do this with the wish to bring peace, stability, and contentment to all.
+
+  - id: shine
+    title: Affirmation to Shine
+    order: 13
+    set: null
+    attribution: Venerable Tarpa
+    body_text: |
+      Today I will appreciate my true value and the miracle of my existence.
+      I will embrace awakening as the true purpose and consummation of my life.
+      I will delight in the freedom and potential available to me in every moment.
+      Today I will stop struggling against reality and embrace the mystery and wonder of life.
+      I will use my breath to ground myself in the stillness of the present moment.
+      I will recognize, cultivate, and radiate my innate goodness in everything I do.
+      I am the bird, I am the flower, I am that which requires no embellishment.
+      From this realization, my awakened activity spontaneously and effortlessly shines forth.
+
+  - id: refuge-pledge
+    title: Refuge Pledge
+    order: 14
+    set: null
+    attribution: null
+    body_text: |
+      I take refuge in the Buddha, the Dharma, and the Sangha.
+      I vow to uphold the basic Buddhist tenets,
+      Of goodness, kindness, and friendliness,
+      Of nonviolence, honesty, and self-control,
+      Of generosity, compassion, and understanding,
+      Of maturity, humility, and personal responsibility.
+      And to uphold the ten precepts of refuge.
+      I vow...
+      1. To respect, protect, and nurture life
+      2. To respect others’ property
+      3. To avoid sexual misconduct
+      4. To speak truthfully and honestly
+      5. To speak politely and kindly
+      6. To speak in ways that create harmony
+      7. To speak meaningfully and moderately
+      8. To cultivate contentment and non-attachment
+      9. To cultivate goodwill
+      10. To cultivate right view
+
+  - id: four-noble-truths
+    title: The Four Noble Truths Affirmation
+    order: 15
+    set: null
+    attribution: Venerable Tarpa
+    body_text: |
+      Today, I commit myself to awakening by cultivating the Buddha’s Four Noble Truths.
+      Consisting of:
+      The Four Noble Truths
+      1. The truth of suffering
+      2. The truth of the cause of suffering
+      3. The truth of the cessation of suffering
+      4. The truth of the path leading to the cessation of suffering
+      I do this by engaging in the Buddha’s Four Tasks and Eightfold Path:
+      The Four Tasks
+      1. Sufferings are to be known
+      2. Their causes are to be abandoned
+      3. Their cessation is to be actualized
+      4. The Eightfold Path is to be relied upon
+      The Eightfold Path
+      Consisting of:
+      1. Right view
+      2. Right intention
+      3. Right speech
+      4. Right action
+      5. Right livelihood
+      6. Right effort
+      7. Right mindfulness
+      8. Right concentration
+      Pledge of daily practice and commitments,
+      I vow, to uphold my daily training - of affirmations, practice, and proper behavior,
+      To recite my vows, precepts, and pledges daily,
+      To purify my vows monthly - by honoring the day of observance.
+
+  - id: evening
+    title: Evening Affirmation
+    order: 16
+    set: evening
+    attribution: Venerable Tarpa
+    body_text: |
+      This evening, as I put my day to rest, I reflect on today’s productive actions.
+      That through my study, contemplation, and practice, I have increased my understanding.
+      That through my altruistic efforts and maturity I have contributed to my community.
+      That through my virtuous intentions and actions, I’m now one step closer to awakening.
+      For tomorrow, and every day thereafter, my goal remains clear, simply improvement,
+      To become a little wiser and a little kinder each and every day.
