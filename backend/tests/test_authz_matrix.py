@@ -22,10 +22,9 @@ decision on this bead, FastAPI's auto-exposed ``/openapi.json`` + ``/docs`` +
 ``/redoc`` are DISABLED in ``create_app`` — a private, one-community app must not
 hand an anonymous visitor a map of its entire API surface.
 
-The curator-only row uses a probe route (``POST /_probe/curator-only`` guarded by
-``require_curator``) because ``sv-lds.7`` — the first real curator-only endpoint
-(root upload) — has not merged yet. WHEN sv-lds.7 LANDS: replace the probe with
-its real route and add a row for it here.
+The curator-only row exercises the real root-upload route
+(``POST /affirmations/{id}/root``, sv-lds.7): anon -> 401, member -> 403,
+curator -> 201.
 
 Everything runs through a real ``TestClient`` against the real app, router, and
 session cookies (no mocks) — the matrix is also the integration test.
@@ -33,15 +32,16 @@ session cookies (no mocks) — the matrix is also the integration test.
 
 from __future__ import annotations
 
+import io
 import re
 
+import numpy as np
 import pytest
-from fastapi import Depends
+import soundfile as sf
 from fastapi.testclient import TestClient
 from starlette.routing import Route
 
 from sharedvoice.app import create_app
-from sharedvoice.dependencies import require_curator
 
 JOIN_CODE = "test-join-code"
 
@@ -150,26 +150,31 @@ def test_auth_entry_points_reachable_without_a_session(tmp_path):
     assert login.status_code == 200
 
 
-# --- curator-only enforcement (probe until sv-lds.7 lands) ----------------
+# --- curator-only enforcement (POST /affirmations/{id}/root, sv-lds.7) ----
 
-def _app_with_curator_probe(tmp_path):
-    app = _app(tmp_path)
+def _sine_wav_bytes(*, sr=44100, seconds=0.2, freq=440.0) -> bytes:
+    t = np.linspace(0, seconds, int(sr * seconds), endpoint=False)
+    samples = (0.2 * np.sin(2 * np.pi * freq * t)).astype(np.float32)
+    buf = io.BytesIO()
+    sf.write(buf, samples, sr, format="WAV")
+    buf.seek(0)
+    return buf.read()
 
-    @app.post("/_probe/curator-only")
-    def _curator_only(user=Depends(require_curator)) -> dict:  # pragma: no cover
-        return {"ok": True}
 
-    return app
+def _upload_root(client, affirmation_id="waking"):
+    return client.post(
+        f"/affirmations/{affirmation_id}/root",
+        files={"file": ("clip.wav", _sine_wav_bytes(), "audio/wav")},
+    )
 
 
-def test_curator_only_route_enforces_the_role(tmp_path):
+def test_curator_only_route_enforces_the_role(actors):
     # anon -> 401 (no session), member -> 403 (authed but not curator),
-    # curator -> 200. Stands in for sv-lds.7's root upload until it merges.
-    app = _app_with_curator_probe(tmp_path)
-    anon, member, curator = _three_actors(app)
-    assert anon.post("/_probe/curator-only").status_code == 401
-    assert member.post("/_probe/curator-only").status_code == 403
-    assert curator.post("/_probe/curator-only").status_code == 200
+    # curator -> 201 (uploads + sets the root recording).
+    anon, member, curator = actors
+    assert _upload_root(anon).status_code == 401
+    assert _upload_root(member).status_code == 403
+    assert _upload_root(curator).status_code == 201
 
 
 # --- the gate re-closes on logout ----------------------------------------
