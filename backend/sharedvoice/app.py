@@ -42,7 +42,16 @@ def create_app(
     corpus.seed_affirmations(conn)
     conn.close()
 
-    app = FastAPI(title="SharedVoice", version="0.1.0")
+    # Lock down FastAPI's auto-exposed API docs (sv-dkl.5): a private,
+    # one-community app must not hand an anonymous visitor a map of its entire
+    # surface. Disabling openapi_url also disables /docs + /redoc.
+    app = FastAPI(
+        title="SharedVoice",
+        version="0.1.0",
+        docs_url=None,
+        redoc_url=None,
+        openapi_url=None,
+    )
     app.add_middleware(SessionMiddleware, secret_key=secret_key)
     app.state.db_path = db_path
     app.state.storage = LocalBlobStore(storage_root)
