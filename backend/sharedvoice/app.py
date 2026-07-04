@@ -16,6 +16,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from . import corpus, models, users
 from .routers import affirmations as affirmations_router
+from .routers import auth as auth_router
 from .storage import db
 from .storage.local import LocalBlobStore
 
@@ -52,4 +53,5 @@ def create_app(
         return {"status": "ok"}
 
     app.include_router(affirmations_router.router)
+    app.include_router(auth_router.router)
     return app
