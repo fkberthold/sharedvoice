@@ -15,6 +15,7 @@ fastapi
 uvicorn[standard]
 python-multipart
 httpx  # required by fastapi.testclient.TestClient
+bcrypt  # password hashing
 
 # Corpus data (affirmations.yaml).
 pyyaml

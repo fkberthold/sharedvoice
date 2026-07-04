@@ -13,7 +13,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 
-from . import corpus, models
+from . import corpus, models, users
 from .routers import affirmations as affirmations_router
 from .storage import db
 from .storage.local import LocalBlobStore
@@ -32,6 +32,7 @@ def create_app(
 
     conn = db.connect(db_path)
     models.init_schema(conn)
+    users.init_user_schema(conn)
     corpus.seed_affirmations(conn)
     conn.close()
 
