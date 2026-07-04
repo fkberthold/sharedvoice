@@ -237,3 +237,7 @@ __marimo__/
 .dolt/
 *.db
 .beads-credential-key
+# bd's pre-commit hook re-exports a byte-identical duplicate of the canonical
+# .beads/issues.jsonl to the repo root on every commit; keep that artifact out
+# of git (the canonical copy lives at .beads/issues.jsonl).
+/issues.jsonl
