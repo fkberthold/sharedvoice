@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 
 from fastapi import FastAPI
+from starlette.middleware.sessions import SessionMiddleware
 
 from . import corpus, models, users
 from .routers import affirmations as affirmations_router
@@ -26,6 +27,10 @@ def create_app(
     db_path: Path | str | None = None,
     storage_root: Path | str | None = None,
 ) -> FastAPI:
+    secret_key = os.environ.get("SHAREDVOICE_SECRET_KEY")
+    if not secret_key:
+        raise RuntimeError("SHAREDVOICE_SECRET_KEY must be set")
+
     db_path = Path(db_path) if db_path is not None else DEFAULT_DB
     storage_root = Path(storage_root) if storage_root is not None else DEFAULT_BLOBS
     db_path.parent.mkdir(parents=True, exist_ok=True)
@@ -37,8 +42,10 @@ def create_app(
     conn.close()
 
     app = FastAPI(title="SharedVoice", version="0.1.0")
+    app.add_middleware(SessionMiddleware, secret_key=secret_key)
     app.state.db_path = db_path
     app.state.storage = LocalBlobStore(storage_root)
+    app.state.join_code = os.environ.get("SHAREDVOICE_JOIN_CODE")
 
     @app.get("/health")
     def health() -> dict[str, str]:

@@ -16,6 +16,7 @@ uvicorn[standard]
 python-multipart
 httpx  # required by fastapi.testclient.TestClient
 bcrypt  # password hashing
+itsdangerous  # required by starlette.middleware.sessions.SessionMiddleware
 
 # Corpus data (affirmations.yaml).
 pyyaml
