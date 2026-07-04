@@ -1,6 +1,8 @@
 # sharedvoice
 
-DOCS-SCAFFOLD-FIXME: one-line project description
+A self-hosted web app for a Buddhist sangha to recite the daily
+affirmations together — asynchronously, each voice aligned into a
+murmured chorus.
 
 ## What you're looking for
 

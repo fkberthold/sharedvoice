@@ -20,9 +20,4 @@ pip install -r requirements.txt
 mkdocs serve
 ```
 
-Before publishing, replace every `DOCS-SCAFFOLD-FIXME` sentinel left
-by the docs scaffold — `grep -r DOCS-SCAFFOLD-FIXME docs/` lists
-them, and `mkdocs build --strict` will refuse to build until every
-one is gone.
-
 Repository: https://github.com/fkberthold/sharedvoice

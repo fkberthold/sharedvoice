@@ -1,13 +1,9 @@
 site_name: sharedvoice
-site_description: DOCS-SCAFFOLD-FIXME: one-line project description
+site_description: A self-hosted web app for a Buddhist sangha to recite daily affirmations together, asynchronously.
 repo_url: https://github.com/fkberthold/sharedvoice
 edit_uri: edit/main/docs/
 
 docs_dir: docs
-
-# Unreplaced scaffold placeholders carry DOCS-SCAFFOLD-FIXME broken-link
-# sentinels; `mkdocs build --strict` will fail until every one is replaced.
-# See docs/reference/docs-scaffold-fixme.md for the convention + inventory.
 
 theme:
   name: material

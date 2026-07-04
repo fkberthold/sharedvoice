@@ -1,37 +1,66 @@
 # Mental model
 
-[!! DOCS-SCAFFOLD-FIXME: replace this section before publish !!](docs-scaffold-fixme-mental-model.md)
-
-> **Thesis:** sharedvoice is shaped by one load-bearing idea.
-> This page names it, traces what it makes possible, and acknowledges
-> what it gives up in return.
-
-Replace this template page with the project's actual mental model.
-The structure below is a starting scaffold, not prescriptive content.
+> **Thesis:** SharedVoice is shaped by one load-bearing idea —
+> *this is recitation, not sustained chant.* This page names that
+> idea, traces what it makes possible, and is honest about what it
+> gives up in return.
 
 ## The load-bearing idea
 
-State the one idea sharedvoice cannot afford to lose. One
-paragraph. If the project lost this idea tomorrow, what stops working?
+The sangha recites daily affirmations: syllabic speech with an
+intonation contour — consonant onsets, rhythmic stress, breath pauses
+between lines. It is **not** sustained chant. Everything about the
+audio design falls out of that one fact. Because the material is
+recitation, participants who follow a root recording track its tempo,
+so the dominant misalignment left is a single fixed latency offset —
+cheap to recover with plain cross-correlation. No time-stretching, no
+phase vocoder, no DTW. If SharedVoice lost this idea and treated the
+audio as free-form chant, the whole alignment engine would collapse
+into an intractable warping problem.
 
 ## What it makes possible
 
-Two or three concrete affordances that fall out of the idea above —
-things the project's users can do *because* of this design choice
-that they could not do otherwise.
+- **"Together," asynchronously.** Nobody has to be online at the same
+  time. One person records a root recitation; others recite along to
+  it on headphones. The server aligns each take afterwards, so the
+  round-trip latency that makes live Zoom recitation impossible simply
+  does not apply.
+- **Cheap, robust alignment.** Sharp consonant transients give crisp
+  cross-correlation peaks. A windowed search over an onset-strength
+  envelope recovers each contributor's latency offset without any
+  signal warping.
+- **The murmur.** The aesthetic target is not tight unison but a
+  *murmur* — a hall full of people reciting together. Phrase starts
+  are loosely anchored into a deliberate spread so voices stay on the
+  same line without collapsing into one flat "congregation creed"
+  sound.
 
 ## What it gives up
 
-The honest accounting. Every load-bearing design choice rules out
-some adjacent design that would also have been useful. Name those
-adjacent designs here so the reader knows the choice was a choice.
+- **No live, synchronous mode.** The whole design assumes contributions
+  arrive after the fact. Reciting together in real time is out of
+  scope.
+- **No tight unison.** Aiming for zero offset lands in the "flam
+  valley" — the ~20–60 ms spread that reads as two people who failed
+  to sync. SharedVoice deliberately avoids it, which means it will
+  never sound like a single voice.
+- **No pitch correction.** Recitation is barely pitched; the slightly
+  different pitches between contributors *are* the chorus, so no
+  auto-tune is applied.
 
 ## How to spot drift
 
-When the rest of the docs (or the code) drifts from this idea, what
-does the drift look like? A few sentences naming the smell-test
-patterns; readers who recognise the patterns are equipped to flag
-them.
+The design is drifting away from its load-bearing idea when you see:
+
+- Reaching for DTW, WSOLA, phase vocoders, or any time-stretching to
+  "tighten" alignment. The answer is always *shift, never stretch*.
+- Aiming for perfect unison, or tuning the `spread` control toward
+  zero. That walks straight into the flam valley.
+- Re-enabling the browser's `echoCancellation`, `autoGainControl`, or
+  `noiseSuppression` on capture. Those are tuned for phone calls and
+  turn a choir into a conference call.
+- Capturing with `MediaRecorder` blobs instead of raw AudioWorklet
+  PCM.
 
 ## Cross-references
 

@@ -3,7 +3,8 @@
 > **Goal:** get sharedvoice on a development machine and verify
 > the install.
 >
-> **Prerequisites:** a POSIX shell, `git`, and read access to
+> **Prerequisites:** a POSIX shell, `git`, [devbox](https://www.jetify.com/devbox)
+> (which provisions the rest of the toolchain), and read access to
 > https://github.com/fkberthold/sharedvoice.
 
 ## Steps
@@ -12,47 +13,37 @@
 
     ```bash
     git clone https://github.com/fkberthold/sharedvoice
-    cd $(basename https://github.com/fkberthold/sharedvoice .git)
+    cd sharedvoice
     ```
 
-[!! DOCS-SCAFFOLD-FIXME: replace this section before publish !!](docs-scaffold-fixme-install-cmd.md)
-
-2. **Install dependencies.** Replace this step with the project's
-   actual installation command. Common shapes:
+2. **Enter the dev shell.** SharedVoice uses devbox to provision a
+   reproducible environment (Python 3.12, ffmpeg, Node, pnpm). The
+   first entry builds a virtualenv and installs the backend and docs
+   dependencies, so it may take a minute:
 
     ```bash
-    # for a Go project
-    ./scripts/setup
-
-    # for a Python project
-    pip install -r requirements.txt
-
-    # for a Node project
-    npm install
-
-    # for a Bash-tool project (e.g. loom-shaped)
-    ./install.sh
+    devbox shell
     ```
 
-[!! DOCS-SCAFFOLD-FIXME: replace this section before publish !!](docs-scaffold-fixme-install-verify.md)
-
-3. **Verify the install.** Replace this step with whatever invocation
-   shows the install succeeded. Whatever you pick should *exit zero*
-   and produce visible output.
+3. **Verify the install.** Run the test suite. It should exit zero and
+   print a passing run:
 
     ```bash
-    sharedvoice --version
+    devbox run test
     ```
 
 ## Troubleshooting
 
-- **Command not found after install.** Confirm the install target is
-  on your `$PATH`. Whether to add the install dir to `$PATH` is a
-  per-project choice; this guide leaves the answer to the project.
-- **Permission denied.** Re-check the install command's output for
-  the install location and confirm you have write access there.
-- **Step 3 produces no output.** The install probably failed silently
-  in step 2 — re-run it with verbose flags and read the log.
+- **`devbox: command not found`.** Install devbox first — see the
+  [devbox install guide](https://www.jetify.com/devbox/docs/installing_devbox/),
+  then re-run step 2.
+- **First `devbox shell` fails while installing dependencies.** The
+  init hook builds `.venv` and runs `pip install`. Delete the partial
+  environment (`rm -rf .venv`) and re-enter the shell to rebuild it
+  cleanly.
+- **`devbox run test` reports no tests collected.** Confirm you are at
+  the repository root; the test script activates `.venv` and runs
+  `pytest` over the `backend/` suite.
 
 ## What to read next
 
