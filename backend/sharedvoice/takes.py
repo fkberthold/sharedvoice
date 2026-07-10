@@ -96,3 +96,14 @@ def get_take(conn: sqlite3.Connection, take_id: str) -> Take | None:
         "SELECT * FROM takes WHERE id = ?", (take_id,)
     ).fetchone()
     return _take_from_row(row) if row else None
+
+
+def list_takes_by_affirmation(conn: sqlite3.Connection, affirmation_id: str) -> list[Take]:
+    """All takes uploaded for `affirmation_id`, oldest first (used by the
+    mix endpoint, sv-lds.17, to gather every contributor track to align +
+    sum alongside the root)."""
+    rows = conn.execute(
+        "SELECT * FROM takes WHERE affirmation_id = ? ORDER BY created_at, id",
+        (affirmation_id,),
+    ).fetchall()
+    return [_take_from_row(r) for r in rows]
