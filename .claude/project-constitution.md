@@ -35,8 +35,8 @@ forbidden: []
 
 canonical_commands:
   build: ""
-  test: "pytest"
-  lint: "ruff check ."
+  test: "devbox run -- pytest"
+  lint: "devbox run -- ruff check ."
   gen: ""
   # dev/build/deploy fixed once they exist (never-invent discipline):
   # backend dev will be a uvicorn command; frontend dev a pnpm command.
@@ -100,9 +100,11 @@ home, because the audio-science ecosystem we lean on lives there.
 - **Storage**: filesystem for audio blobs + SQLite for metadata in the MVP,
   behind an **interface** so it can move to object storage later without
   touching the pipeline.
-- **Canonical commands**: `test: pytest`, `lint: ruff check .` (mirror
-  `.beads/preflight.template`). `build`/`gen`/`dev`/`deploy` filled as they
-  come into existence.
+- **Canonical commands**: `test: devbox run -- pytest`, `lint: devbox run --
+  ruff check .` — wrapped in the devbox envelope (`shell.run_prefix`) because
+  the resolver (`loom-script-resolve.sh` rung 2) runs `canonical_commands.X`
+  as a bare string; it does not auto-apply `run_prefix`. `build`/`gen`/`dev`/
+  `deploy` filled as they come into existence.
 
 ## Forbidden patterns
 
