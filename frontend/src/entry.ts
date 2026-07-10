@@ -3,6 +3,7 @@
 // tested with an injected fake api. This module wires the real HTTP calls
 // (src/api.ts) and re-renders the DOM tree boot() produces so its
 // otherwise-inert forms/buttons actually do something.
+import './style.css'
 import { boot } from './main'
 import { renderAuthWall, type AuthWallHandlers } from './views/authWall'
 import * as realApi from './api'

@@ -5,6 +5,7 @@ export interface AuthWallHandlers {
 
 function makeField(labelText: string, name: string, type: string): { wrapper: HTMLElement; input: HTMLInputElement } {
   const wrapper = document.createElement('label')
+  wrapper.className = 'field'
   wrapper.textContent = labelText
   const input = document.createElement('input')
   input.name = name
@@ -15,6 +16,7 @@ function makeField(labelText: string, name: string, type: string): { wrapper: HT
 
 function buildLoginForm(handlers: AuthWallHandlers): HTMLFormElement {
   const form = document.createElement('form')
+  form.className = 'auth-form'
   form.setAttribute('data-testid', 'login-form')
 
   const username = makeField('Username', 'username', 'text')
@@ -24,6 +26,7 @@ function buildLoginForm(handlers: AuthWallHandlers): HTMLFormElement {
 
   const submit = document.createElement('button')
   submit.type = 'submit'
+  submit.className = 'btn btn-primary'
   submit.textContent = 'Log in'
   form.appendChild(submit)
 
@@ -37,6 +40,7 @@ function buildLoginForm(handlers: AuthWallHandlers): HTMLFormElement {
 
 function buildRegisterForm(handlers: AuthWallHandlers): HTMLFormElement {
   const form = document.createElement('form')
+  form.className = 'auth-form'
   form.setAttribute('data-testid', 'register-form')
 
   const joinCode = makeField('Community join code', 'join_code', 'text')
@@ -50,6 +54,7 @@ function buildRegisterForm(handlers: AuthWallHandlers): HTMLFormElement {
 
   const submit = document.createElement('button')
   submit.type = 'submit'
+  submit.className = 'btn btn-primary'
   submit.textContent = 'Create account'
   form.appendChild(submit)
 
@@ -63,8 +68,10 @@ function buildRegisterForm(handlers: AuthWallHandlers): HTMLFormElement {
 
 export function renderAuthWall(handlers: AuthWallHandlers, errorMessage?: string): HTMLElement {
   const container = document.createElement('div')
+  container.className = 'auth-wall'
 
   const errorSlot = document.createElement('div')
+  errorSlot.className = 'auth-error'
   errorSlot.setAttribute('data-testid', 'auth-error')
   if (errorMessage) {
     errorSlot.textContent = errorMessage
@@ -77,6 +84,7 @@ export function renderAuthWall(handlers: AuthWallHandlers, errorMessage?: string
 
   const toggle = document.createElement('button')
   toggle.type = 'button'
+  toggle.className = 'btn btn-link'
   toggle.setAttribute('data-testid', 'toggle-auth-mode')
   toggle.textContent = 'Need an account? Register'
 
