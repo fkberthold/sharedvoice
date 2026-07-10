@@ -29,3 +29,19 @@ def test_verify_password_rejects_wrong_password():
 def test_hash_password_is_salted():
     pw = "correct horse battery staple"
     assert hash_password(pw) != hash_password(pw)
+
+
+def test_hash_password_respects_bcrypt_rounds_env(monkeypatch):
+    monkeypatch.setenv("SHAREDVOICE_BCRYPT_ROUNDS", "4")
+    pw = "correct horse battery staple"
+    h = hash_password(pw)
+    assert h.startswith("$2b$04$")
+    assert verify_password(pw, h) is True
+
+
+def test_hash_password_defaults_to_bcrypt_default_rounds_when_env_unset(monkeypatch):
+    monkeypatch.delenv("SHAREDVOICE_BCRYPT_ROUNDS", raising=False)
+    pw = "correct horse battery staple"
+    h = hash_password(pw)
+    assert h.startswith("$2b$12$")
+    assert verify_password(pw, h) is True

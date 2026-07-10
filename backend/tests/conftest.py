@@ -4,6 +4,10 @@
 This autouse fixture supplies that key (plus the join code) for every test so
 the pre-existing suite keeps constructing apps without env boilerplate. Tests
 that exercise the fail-fast path delete the key themselves via monkeypatch.
+
+It also pins ``SHAREDVOICE_BCRYPT_ROUNDS`` to bcrypt's minimum (4) so real
+password hashing in register/login tests stays fast (sv-1x1); production
+leaves the env var unset and gets bcrypt's own default (12).
 """
 
 import pytest
@@ -16,6 +20,7 @@ from sharedvoice.app import create_app
 def _auth_env(monkeypatch):
     monkeypatch.setenv("SHAREDVOICE_SECRET_KEY", "test-secret-key")
     monkeypatch.setenv("SHAREDVOICE_JOIN_CODE", "test-join-code")
+    monkeypatch.setenv("SHAREDVOICE_BCRYPT_ROUNDS", "4")
 
 
 @pytest.fixture
