@@ -45,9 +45,10 @@ export async function logout(): Promise<void> {
 
 // The backend affirmation record (sharedvoice.models.Affirmation) has fields
 // `id`, `title`, `body_text` -- there is no `text` field. The frontend
-// contract (sv-lds.8) pins `Affirmation { id, text }`, so this is the seam
-// that adapts backend shape to frontend contract: prefer body_text, fall
-// back to title if body_text is empty.
+// contract (sv-uhx) pins `Affirmation { id, title, text }`: `title` passes
+// through as-is (shown as the nav/detail heading); `text` is the seam that
+// adapts the recited-liturgy field for detail-pane body copy: prefer
+// body_text, fall back to title if body_text is empty.
 interface BackendAffirmation {
   id: string
   title: string
@@ -62,6 +63,7 @@ export async function getAffirmations(): Promise<Affirmation[]> {
   const data = (await response.json()) as BackendAffirmation[]
   return data.map((a) => ({
     id: a.id,
+    title: a.title,
     text: a.body_text && a.body_text.length > 0 ? a.body_text : a.title,
   }))
 }

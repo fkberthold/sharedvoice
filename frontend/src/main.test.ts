@@ -29,7 +29,9 @@ describe('boot', () => {
   it('renders the app view with affirmations when getMe resolves a user', async () => {
     const container = document.createElement('div')
     const me: MeResponse = { username: 'alice', is_curator: false }
-    const affirmations: Affirmation[] = [{ id: 'waking', text: 'You are waking gently.' }]
+    const affirmations: Affirmation[] = [
+      { id: 'waking', title: 'Waking Affirmation', text: 'You are waking gently.' },
+    ]
     const api = makeApi({
       getMe: vi.fn().mockResolvedValue(me),
       getAffirmations: vi.fn().mockResolvedValue(affirmations),

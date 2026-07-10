@@ -1,5 +1,6 @@
 export interface Affirmation {
   id: string
+  title: string
   text: string
 }
 
@@ -19,42 +20,6 @@ export function renderAppView(props: AppViewProps): HTMLElement {
   heading.textContent = 'Affirmations'
   header.appendChild(heading)
 
-  if (props.isCurator) {
-    const stub = document.createElement('button')
-    stub.type = 'button'
-    stub.className = 'btn btn-stub'
-    stub.setAttribute('data-testid', 'upload-stub')
-    stub.textContent = 'Upload root (coming soon)'
-    stub.disabled = true
-    // Intentionally inert: no click handler wired. Real upload wiring is a
-    // future bead; this is a visible-but-inert placeholder only.
-    header.appendChild(stub)
-  }
-  container.appendChild(header)
-
-  const list = document.createElement('ul')
-  list.className = 'affirmation-list'
-  for (const affirmation of props.affirmations) {
-    const item = document.createElement('li')
-    item.className = 'affirmation-item'
-
-    const label = document.createElement('span')
-    label.className = 'affirmation-text'
-    label.textContent = affirmation.text
-    item.appendChild(label)
-
-    const audio = document.createElement('audio')
-    audio.className = 'affirmation-audio'
-    audio.setAttribute('src', `/affirmations/${affirmation.id}/root`)
-    audio.controls = true
-    item.appendChild(audio)
-
-    list.appendChild(item)
-  }
-  container.appendChild(list)
-
-  const footer = document.createElement('div')
-  footer.className = 'app-footer'
   const logout = document.createElement('button')
   logout.type = 'button'
   logout.className = 'btn btn-secondary'
@@ -63,8 +28,80 @@ export function renderAppView(props: AppViewProps): HTMLElement {
   logout.addEventListener('click', () => {
     props.onLogout()
   })
-  footer.appendChild(logout)
-  container.appendChild(footer)
+  header.appendChild(logout)
+  container.appendChild(header)
+
+  const layout = document.createElement('div')
+  layout.className = 'app-layout'
+
+  const nav = document.createElement('nav')
+  nav.className = 'affirmation-nav'
+  const detail = document.createElement('div')
+  detail.className = 'affirmation-detail'
+
+  const navButtons = new Map<string, HTMLButtonElement>()
+
+  function selectAffirmation(affirmation: Affirmation): void {
+    for (const [id, btn] of navButtons) {
+      btn.classList.toggle('active', id === affirmation.id)
+    }
+
+    detail.innerHTML = ''
+
+    const title = document.createElement('h2')
+    title.setAttribute('data-testid', 'detail-title')
+    title.textContent = affirmation.title
+    detail.appendChild(title)
+
+    const text = document.createElement('p')
+    text.className = 'affirmation-text'
+    text.setAttribute('data-testid', 'detail-text')
+    text.textContent = affirmation.text
+    detail.appendChild(text)
+
+    const audio = document.createElement('audio')
+    audio.className = 'affirmation-audio'
+    audio.setAttribute('src', `/affirmations/${affirmation.id}/root`)
+    audio.controls = true
+    detail.appendChild(audio)
+
+    if (props.isCurator) {
+      const stub = document.createElement('button')
+      stub.type = 'button'
+      stub.className = 'btn btn-stub'
+      stub.setAttribute('data-testid', 'upload-stub')
+      stub.textContent = 'Upload root (coming soon)'
+      stub.disabled = true
+      // Intentionally inert: no click handler wired. Real upload wiring is a
+      // future bead; this is a visible-but-inert placeholder only.
+      detail.appendChild(stub)
+    }
+  }
+
+  for (const affirmation of props.affirmations) {
+    const navButton = document.createElement('button')
+    navButton.type = 'button'
+    navButton.className = 'nav-item'
+    navButton.setAttribute('data-testid', `nav-item-${affirmation.id}`)
+    navButton.textContent = affirmation.title
+    navButton.addEventListener('click', () => selectAffirmation(affirmation))
+    navButtons.set(affirmation.id, navButton)
+    nav.appendChild(navButton)
+  }
+
+  layout.appendChild(nav)
+  layout.appendChild(detail)
+  container.appendChild(layout)
+
+  const first = props.affirmations[0]
+  if (first) {
+    selectAffirmation(first)
+  } else {
+    const empty = document.createElement('p')
+    empty.className = 'affirmation-empty'
+    empty.textContent = 'No affirmations yet.'
+    detail.appendChild(empty)
+  }
 
   return container
 }
