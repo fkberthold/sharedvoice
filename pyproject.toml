@@ -4,6 +4,11 @@
 [tool.pytest.ini_options]
 pythonpath = ["backend"]
 testpaths = ["backend/tests"]
+# RED-first contract tests (sv-lds.9/.10/.11) deliberately fail collection via
+# ModuleNotFoundError against not-yet-built modules (align.py/mix.py, sv-lds.15/.16)
+# -- without this, a single such file aborts collection for the WHOLE suite instead
+# of just itself, hiding real pass/fail counts for everything else.
+addopts = "--continue-on-collection-errors"
 
 [tool.ruff]
 line-length = 100
