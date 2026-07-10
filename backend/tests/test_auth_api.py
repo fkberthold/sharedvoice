@@ -33,9 +33,11 @@ login POST logs that client in, and a later /auth/me on the SAME client carries
 the cookie. A FRESH TestClient is an unauthenticated / second-user context.
 """
 
+from unittest.mock import patch
+
 from fastapi.testclient import TestClient
 
-from sharedvoice import users
+from sharedvoice import security, users
 from sharedvoice.app import create_app
 from sharedvoice.storage.db import connect
 
@@ -143,6 +145,27 @@ def test_login_unknown_username_matches_wrong_password_body(tmp_path):
     assert unknown.status_code == 401
     # Non-enumeration: the unknown-username response is indistinguishable.
     assert unknown.json() == wrong_pw.json()
+
+
+def test_login_unknown_username_still_pays_verify_password_cost(tmp_path):
+    """Timing side-channel guard (sv-9wi).
+
+    The user-not-found path must still call ``security.verify_password``
+    (against a fixed dummy hash) before returning 401, so an unknown
+    username can't be distinguished from a wrong password by response
+    latency. We can't assert on wall-clock time in CI (flaky), so instead
+    we spy on the imported name in ``routers.auth`` and assert it's called
+    exactly once even when the username doesn't exist at all.
+    """
+    app = _app(tmp_path)
+    TestClient(app).post("/auth/register", json=_register_body("alice", password="s3cret"))
+
+    with patch("sharedvoice.routers.auth.security.verify_password", wraps=security.verify_password) as spy:
+        resp = TestClient(app).post(
+            "/auth/login", json={"username": "ghost", "password": "whatever"}
+        )
+    assert resp.status_code == 401
+    assert spy.call_count == 1
 
 
 # --- logout --------------------------------------------------------------

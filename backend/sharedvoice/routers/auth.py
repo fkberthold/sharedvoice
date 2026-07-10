@@ -15,6 +15,14 @@ from ..users import User
 
 router = APIRouter(prefix="/auth")
 
+# Fixed dummy bcrypt hash used to pay the same verify_password cost on the
+# user-not-found login path as on the wrong-password path, so an unknown
+# username can't be distinguished from a wrong password by response timing
+# (sv-9wi). Precomputed once (bcrypt.hashpw of a fixed dummy string) so it
+# doesn't need to be recomputed per request; the plaintext it corresponds to
+# is never accepted by any real user, so this is not a usable credential.
+_DUMMY_PASSWORD_HASH = "$2b$12$QCkNrQVW3Lvc1yFM8ZzIiO0DxoYp5T7ognl5zISOIICtXNcKL/dK."
+
 
 class RegisterBody(BaseModel):
     join_code: str
@@ -63,7 +71,14 @@ def login(body: LoginBody, request: Request) -> dict:
         user = users.get_user_by_username(conn, body.username)
     finally:
         conn.close()
-    if user is None or not security.verify_password(body.password, user.password_hash):
+    if user is None:
+        # Still pay the verify_password cost against a fixed dummy hash so
+        # this path takes the same time as the wrong-password path below —
+        # otherwise response latency alone would leak whether a username
+        # exists, even though the response body is already identical.
+        security.verify_password(body.password, _DUMMY_PASSWORD_HASH)
+        raise HTTPException(status_code=401, detail="invalid credentials")
+    if not security.verify_password(body.password, user.password_hash):
         raise HTTPException(status_code=401, detail="invalid credentials")
     request.session["user_id"] = user.id
     return _public(user)
