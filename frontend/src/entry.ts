@@ -46,8 +46,12 @@ function makeAuthHandlers(container: HTMLElement): AuthWallHandlers {
 
 function renderAuthError(container: HTMLElement, message: string): void {
   container.innerHTML = ''
+  // renderAuthWall bakes the real handlers straight into the form's submit
+  // listener (see views/authWall.ts's buildLoginForm/buildRegisterForm), so
+  // this form is already fully wired. Do NOT also call wireAuthWall here --
+  // that would attach a second, independent real submit listener onto the
+  // same form, causing a resubmit to fire the real API call twice.
   container.appendChild(renderAuthWall(makeAuthHandlers(container), message))
-  wireAuthWall(container)
 }
 
 // boot() renders the auth wall with inert (no-op) handlers -- BootApi has no
