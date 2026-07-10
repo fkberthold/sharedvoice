@@ -226,7 +226,7 @@ def test_windowed_search_recovers_true_offset_not_wrong_repetition():
         candidate,
         SR,
         expected_offset=EXPECTED_OFFSET_HINT_SECONDS,
-        window=SEARCH_WINDOW_SECONDS,
+        max_offset_seconds=SEARCH_WINDOW_SECONDS,
     )
 
     assert result == pytest.approx(TRUE_OFFSET_SECONDS, abs=0.02), (
