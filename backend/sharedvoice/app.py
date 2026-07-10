@@ -14,10 +14,11 @@ from pathlib import Path
 from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
 
-from . import corpus, models, users
+from . import corpus, models, takes, users
 from .routers import affirmations as affirmations_router
 from .routers import auth as auth_router
 from .routers import roots as roots_router
+from .routers import takes as takes_router
 from .storage import db
 from .storage.local import LocalBlobStore
 
@@ -40,6 +41,7 @@ def create_app(
     conn = db.connect(db_path)
     models.init_schema(conn)
     users.init_user_schema(conn)
+    takes.init_take_schema(conn)
     corpus.seed_affirmations(conn)
     conn.close()
 
@@ -65,4 +67,5 @@ def create_app(
     app.include_router(affirmations_router.router)
     app.include_router(auth_router.router)
     app.include_router(roots_router.router)
+    app.include_router(takes_router.router)
     return app
