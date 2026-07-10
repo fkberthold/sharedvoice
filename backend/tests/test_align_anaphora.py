@@ -217,26 +217,44 @@ def test_windowed_search_recovers_true_offset_not_wrong_repetition():
     ``test_naive_unconstrained_correlation_would_pick_the_wrong_repetition``
     for the numeric proof that the distractor really does outscore the true
     match.
+
+    Sign-convention note (sv-lds.15 integration fix): ``align_offset``'s
+    contract (pinned by ``test_align_offset.py``) is ``candidate[t] ~=
+    reference[t - offset]``. ``_naive_unconstrained_search`` above uses
+    ``scipy.signal.correlate(reference, candidate, mode="valid")``, whose
+    lag ``k`` satisfies ``candidate[j] ~= reference[j + k]`` -- the
+    NEGATION of ``align_offset``'s convention (``offset == -k``). This
+    module's constants (``TRUE_OFFSET_SECONDS`` etc.) are defined in the
+    naive/``k`` convention to match that helper, so they must be negated
+    here at the ``align_offset`` call site, which speaks the opposite
+    convention. Leaving the module-level constants alone (rather than
+    negating them globally) keeps
+    ``test_naive_unconstrained_correlation_would_pick_the_wrong_repetition``
+    correct in its own frame.
     """
     reference = _build_reference()
     candidate = _build_candidate(reference)
+
+    aligned_expected_offset = -EXPECTED_OFFSET_HINT_SECONDS
+    aligned_true_offset = -TRUE_OFFSET_SECONDS
+    aligned_distractor_offset = -DISTRACTOR_OFFSET_SECONDS
 
     result = align_offset(
         reference,
         candidate,
         SR,
-        expected_offset=EXPECTED_OFFSET_HINT_SECONDS,
+        expected_offset=aligned_expected_offset,
         max_offset_seconds=SEARCH_WINDOW_SECONDS,
     )
 
-    assert result == pytest.approx(TRUE_OFFSET_SECONDS, abs=0.02), (
+    assert result == pytest.approx(aligned_true_offset, abs=0.02), (
         f"expected the +/-{SEARCH_WINDOW_SECONDS}s windowed search around "
-        f"{EXPECTED_OFFSET_HINT_SECONDS}s to recover the TRUE repetition's "
-        f"offset ({TRUE_OFFSET_SECONDS}s), got {result}s"
+        f"{aligned_expected_offset}s to recover the TRUE repetition's "
+        f"offset ({aligned_true_offset}s), got {result}s"
     )
     # Explicitly not the wrong (but higher-correlation) repetition an
     # unconstrained search would have preferred.
-    assert abs(result - DISTRACTOR_OFFSET_SECONDS) > 0.5, (
+    assert abs(result - aligned_distractor_offset) > 0.5, (
         "windowed search must not have drifted onto the distractor "
-        f"repetition's offset ({DISTRACTOR_OFFSET_SECONDS}s), got {result}s"
+        f"repetition's offset ({aligned_distractor_offset}s), got {result}s"
     )
