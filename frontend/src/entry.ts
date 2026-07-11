@@ -4,12 +4,19 @@
 // (src/api.ts) and re-renders the DOM tree boot() produces so its
 // otherwise-inert forms/buttons actually do something.
 import './style.css'
-import { boot } from './main'
+import { boot, type BootApi } from './main'
 import { renderAuthWall, type AuthWallHandlers } from './views/authWall'
 import * as realApi from './api'
+import { createRecorderEngine } from './audio/recorder'
+
+// createRecorderEngine lives in audio/recorder.ts (sv-lds.13); everything
+// else BootApi needs (getMe/getAffirmations/uploadTake) is already on
+// realApi (src/api.ts) -- this is the record-a-take flow's real-capability
+// injection point (sv-lds.12 + sv-lds.13 integration).
+const bootApi: BootApi = { ...realApi, createRecorderEngine }
 
 async function start(container: HTMLElement): Promise<void> {
-  await boot(container, realApi)
+  await boot(container, bootApi)
   wire(container)
 }
 

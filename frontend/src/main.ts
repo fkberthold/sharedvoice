@@ -1,5 +1,6 @@
 import { renderAuthWall, type AuthWallHandlers } from './views/authWall'
 import { renderAppView, type Affirmation, type AppViewProps } from './views/appView'
+import type { RecorderEngine } from './audio/recorder'
 
 export interface MeResponse {
   username: string
@@ -9,6 +10,13 @@ export interface MeResponse {
 export interface BootApi {
   getMe: () => Promise<MeResponse | null>
   getAffirmations: () => Promise<Affirmation[]>
+  // Real audio/network capabilities for the record-a-take flow (sv-lds.12
+  // UI shell + sv-lds.13 audio engine). Optional and left undefined by
+  // fake test apis -- AppViewProps degrades to local-only state
+  // transitions in that case (see appView.ts). entry.ts's realApi
+  // supplies these for real.
+  createRecorderEngine?: (rootAudioEl: HTMLAudioElement) => RecorderEngine
+  uploadTake?: (affirmationId: string, wavBlob: Blob) => Promise<{ ok: boolean }>
 }
 
 // boot() is the pure, testable dispatch: given an injected api, decide
@@ -35,6 +43,8 @@ export async function boot(container: HTMLElement, api: BootApi): Promise<void> 
     affirmations,
     isCurator: me.is_curator,
     onLogout: () => {},
+    createRecorderEngine: api.createRecorderEngine,
+    uploadTake: api.uploadTake,
   }
   container.appendChild(renderAppView(props))
 }

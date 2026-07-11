@@ -1,4 +1,5 @@
 import { renderRecordFlow, type RecordFlowHandlers, type RecordFlowState } from './recordFlow'
+import type { RecorderEngine } from '../audio/recorder'
 
 export interface Affirmation {
   id: string
@@ -10,6 +11,13 @@ export interface AppViewProps {
   affirmations: Affirmation[]
   isCurator: boolean
   onLogout: () => void
+  // Real audio/network capabilities (sv-lds.12+.13 integration). Left
+  // undefined in tests and in main.ts's boot() docs-example usage, in
+  // which case the record flow falls back to local-only state transitions
+  // (no real mic access, no real upload) -- see recordFlowHandlers below.
+  // entry.ts supplies the real implementations.
+  createRecorderEngine?: (rootAudioEl: HTMLAudioElement) => RecorderEngine
+  uploadTake?: (affirmationId: string, wavBlob: Blob) => Promise<{ ok: boolean }>
 }
 
 export function renderAppView(props: AppViewProps): HTMLElement {
@@ -43,34 +51,57 @@ export function renderAppView(props: AppViewProps): HTMLElement {
 
   const navButtons = new Map<string, HTMLButtonElement>()
 
-  // Local state for the record-a-take flow (sv-lds.12). `recordFlowState` is
-  // non-null while the record flow is showing in place of the normal detail
-  // content for `currentAffirmation`. The handlers below are PLACEHOLDER
-  // state-machine transitions only -- this bead proves the wiring, not real
-  // audio capture. sv-lds.13 (sibling bead, parallel worktree) owns the real
-  // audio engine; central replaces these placeholder transitions with calls
-  // into that engine when both beads are integrated in entry.ts.
+  // Local state for the record-a-take flow (sv-lds.12 UI shell + sv-lds.13
+  // audio engine, wired together here). `recordFlowState` is non-null while
+  // the record flow is showing in place of the normal detail content for
+  // `currentAffirmation`. `currentRootAudioEl` is captured in
+  // renderNormalDetail() so the real engine can play it in sync with
+  // capture; `currentEngine`/`currentTakeBlob` carry state across the
+  // gate->recording->review transitions. When `props.createRecorderEngine`/
+  // `props.uploadTake` are undefined (tests, or a future caller that
+  // doesn't wire real audio), the flow degrades to local-only state
+  // transitions with no real mic access or upload.
   let currentAffirmation: Affirmation | null = null
+  let currentRootAudioEl: HTMLAudioElement | null = null
   let recordFlowState: RecordFlowState | null = null
+  let currentEngine: RecorderEngine | null = null
+  let currentTakeBlob: Blob | null = null
 
   const recordFlowHandlers: RecordFlowHandlers = {
     onReady: () => {
       recordFlowState = { phase: 'recording' }
       renderDetail()
+      if (props.createRecorderEngine && currentRootAudioEl) {
+        currentEngine = props.createRecorderEngine(currentRootAudioEl)
+        void currentEngine.start()
+      }
     },
     onStop: () => {
-      // TODO(central): replace this placeholder previewUrl with the real
-      // object URL produced by sv-lds.13's audio engine once it's wired in.
-      recordFlowState = { phase: 'review', previewUrl: 'about:blank' }
-      renderDetail()
+      if (currentEngine) {
+        const engine = currentEngine
+        currentEngine = null
+        void engine.stop().then((blob) => {
+          currentTakeBlob = blob
+          recordFlowState = { phase: 'review', previewUrl: URL.createObjectURL(blob) }
+          renderDetail()
+        })
+      } else {
+        recordFlowState = { phase: 'review', previewUrl: 'about:blank' }
+        renderDetail()
+      }
     },
     onSubmit: () => {
-      // TODO(central): replace with a real submit-to-server call. For now,
-      // discard local state and return to the normal detail view.
+      const affirmation = currentAffirmation
+      const blob = currentTakeBlob
+      if (props.uploadTake && affirmation && blob) {
+        void props.uploadTake(affirmation.id, blob)
+      }
+      currentTakeBlob = null
       recordFlowState = null
       renderDetail()
     },
     onReRecord: () => {
+      currentTakeBlob = null
       recordFlowState = { phase: 'gate' }
       renderDetail()
     },
@@ -93,6 +124,7 @@ export function renderAppView(props: AppViewProps): HTMLElement {
     audio.setAttribute('src', `/affirmations/${affirmation.id}/root`)
     audio.controls = true
     detail.appendChild(audio)
+    currentRootAudioEl = audio
 
     if (props.isCurator) {
       const stub = document.createElement('button')
