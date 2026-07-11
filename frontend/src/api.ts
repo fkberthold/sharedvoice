@@ -67,3 +67,20 @@ export async function getAffirmations(): Promise<Affirmation[]> {
     text: a.body_text && a.body_text.length > 0 ? a.body_text : a.title,
   }))
 }
+
+// Backend endpoint (sv-lds.14, shipped): POST /affirmations/{id}/takes,
+// expecting multipart/form-data with a `file` field (FastAPI `UploadFile`
+// parameter named `file` -- the field name is load-bearing, it must match
+// exactly). Do NOT set a Content-Type header manually: fetch derives the
+// correct multipart boundary from the FormData body automatically, and
+// setting it by hand breaks that boundary.
+export async function uploadTake(affirmationId: string, wavBlob: Blob): Promise<AuthResult> {
+  const formData = new FormData()
+  formData.append('file', wavBlob, 'take.wav')
+  const response = await fetch(`/affirmations/${affirmationId}/takes`, {
+    method: 'POST',
+    credentials: 'same-origin',
+    body: formData,
+  })
+  return response.ok ? { ok: true } : { ok: false, status: response.status }
+}
