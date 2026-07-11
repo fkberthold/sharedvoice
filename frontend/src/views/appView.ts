@@ -1,3 +1,5 @@
+import { renderRecordFlow, type RecordFlowHandlers, type RecordFlowState } from './recordFlow'
+
 export interface Affirmation {
   id: string
   title: string
@@ -41,13 +43,40 @@ export function renderAppView(props: AppViewProps): HTMLElement {
 
   const navButtons = new Map<string, HTMLButtonElement>()
 
-  function selectAffirmation(affirmation: Affirmation): void {
-    for (const [id, btn] of navButtons) {
-      btn.classList.toggle('active', id === affirmation.id)
-    }
+  // Local state for the record-a-take flow (sv-lds.12). `recordFlowState` is
+  // non-null while the record flow is showing in place of the normal detail
+  // content for `currentAffirmation`. The handlers below are PLACEHOLDER
+  // state-machine transitions only -- this bead proves the wiring, not real
+  // audio capture. sv-lds.13 (sibling bead, parallel worktree) owns the real
+  // audio engine; central replaces these placeholder transitions with calls
+  // into that engine when both beads are integrated in entry.ts.
+  let currentAffirmation: Affirmation | null = null
+  let recordFlowState: RecordFlowState | null = null
 
-    detail.innerHTML = ''
+  const recordFlowHandlers: RecordFlowHandlers = {
+    onReady: () => {
+      recordFlowState = { phase: 'recording' }
+      renderDetail()
+    },
+    onStop: () => {
+      // TODO(central): replace this placeholder previewUrl with the real
+      // object URL produced by sv-lds.13's audio engine once it's wired in.
+      recordFlowState = { phase: 'review', previewUrl: 'about:blank' }
+      renderDetail()
+    },
+    onSubmit: () => {
+      // TODO(central): replace with a real submit-to-server call. For now,
+      // discard local state and return to the normal detail view.
+      recordFlowState = null
+      renderDetail()
+    },
+    onReRecord: () => {
+      recordFlowState = { phase: 'gate' }
+      renderDetail()
+    },
+  }
 
+  function renderNormalDetail(affirmation: Affirmation): void {
     const title = document.createElement('h2')
     title.setAttribute('data-testid', 'detail-title')
     title.textContent = affirmation.title
@@ -76,6 +105,42 @@ export function renderAppView(props: AppViewProps): HTMLElement {
       // future bead; this is a visible-but-inert placeholder only.
       detail.appendChild(stub)
     }
+
+    const recordTrigger = document.createElement('button')
+    recordTrigger.type = 'button'
+    recordTrigger.className = 'btn btn-primary'
+    recordTrigger.setAttribute('data-testid', 'record-trigger')
+    recordTrigger.textContent = 'Record your take'
+    recordTrigger.addEventListener('click', () => {
+      recordFlowState = { phase: 'gate' }
+      renderDetail()
+    })
+    detail.appendChild(recordTrigger)
+  }
+
+  function renderDetail(): void {
+    if (!currentAffirmation) {
+      return
+    }
+
+    detail.innerHTML = ''
+
+    if (recordFlowState) {
+      detail.appendChild(renderRecordFlow(recordFlowState, recordFlowHandlers))
+      return
+    }
+
+    renderNormalDetail(currentAffirmation)
+  }
+
+  function selectAffirmation(affirmation: Affirmation): void {
+    for (const [id, btn] of navButtons) {
+      btn.classList.toggle('active', id === affirmation.id)
+    }
+
+    currentAffirmation = affirmation
+    recordFlowState = null
+    renderDetail()
   }
 
   for (const affirmation of props.affirmations) {

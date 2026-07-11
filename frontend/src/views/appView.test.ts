@@ -20,6 +20,13 @@ import { renderAppView, type Affirmation, type AppViewProps } from './appView'
 //   audio[src="/affirmations/{id}/root"]  exactly one, for the SELECTED affirmation only
 //   [data-testid="upload-stub"]       curator-only inert upload control, in the detail pane
 //   [data-testid="logout"]            logout button -> calls props.onLogout
+//
+// sv-lds.12: the detail pane also carries a "Record your take" trigger,
+// visible for ANY logged-in member (not curator-gated, unlike upload-stub).
+// Clicking it swaps in the recordFlow.ts view (starting at its 'gate' phase)
+// in place of the normal detail content. recordFlow.ts's own phase/handler
+// contract is covered by recordFlow.test.ts, not here.
+//   [data-testid="record-trigger"]    visible for every member, opens the record flow
 
 const UPLOAD_STUB_TEXT = 'Upload root (coming soon)'
 
@@ -117,5 +124,59 @@ describe('renderAppView', () => {
     const el = renderAppView(baseProps({ affirmations: [] }))
     expect(() => el.querySelectorAll('*')).not.toThrow()
     expect(el.querySelector('audio')).toBeNull()
+  })
+
+  it('renders the record trigger for a non-curator member', () => {
+    const el = renderAppView(baseProps({ isCurator: false }))
+    expect(el.querySelector('[data-testid="record-trigger"]')).not.toBeNull()
+  })
+
+  it('renders the record trigger for a curator too (not curator-gated)', () => {
+    const el = renderAppView(baseProps({ isCurator: true }))
+    expect(el.querySelector('[data-testid="record-trigger"]')).not.toBeNull()
+  })
+
+  it('clicking the record trigger swaps in the record flow gate phase', () => {
+    const el = renderAppView(baseProps())
+
+    expect(el.querySelector('[data-testid="record-ready"]')).toBeNull()
+
+    const trigger = el.querySelector<HTMLElement>('[data-testid="record-trigger"]')!
+    trigger.click()
+
+    // The gate phase's ready button is now showing in the detail pane, and
+    // the normal detail content it swapped out is gone.
+    expect(el.querySelector('[data-testid="record-ready"]')).not.toBeNull()
+    expect(el.querySelector('[data-testid="detail-title"]')).toBeNull()
+    expect(el.querySelector('[data-testid="record-trigger"]')).toBeNull()
+  })
+
+  it('walks the record flow gate -> recording -> review placeholder states via the trigger', () => {
+    const el = renderAppView(baseProps())
+
+    el.querySelector<HTMLElement>('[data-testid="record-trigger"]')!.click()
+    el.querySelector<HTMLElement>('[data-testid="record-ready"]')!.click()
+
+    expect(el.querySelector('[data-testid="record-stop"]')).not.toBeNull()
+
+    el.querySelector<HTMLElement>('[data-testid="record-stop"]')!.click()
+
+    const audio = el.querySelector('audio')
+    expect(audio).not.toBeNull()
+    expect(el.querySelector('[data-testid="record-submit"]')).not.toBeNull()
+    expect(el.querySelector('[data-testid="record-rerecord"]')).not.toBeNull()
+  })
+
+  it('re-selecting an affirmation from the nav resets an in-progress record flow', () => {
+    const el = renderAppView(baseProps())
+
+    el.querySelector<HTMLElement>('[data-testid="record-trigger"]')!.click()
+    expect(el.querySelector('[data-testid="record-ready"]')).not.toBeNull()
+
+    el.querySelector<HTMLElement>('[data-testid="nav-item-resting"]')!.click()
+
+    expect(el.querySelector('[data-testid="record-ready"]')).toBeNull()
+    expect(el.querySelector('[data-testid="detail-title"]')!.textContent).toContain('Resting Affirmation')
+    expect(el.querySelector('[data-testid="record-trigger"]')).not.toBeNull()
   })
 })
